@@ -1,0 +1,75 @@
+<!-- src/app/pages/login/login.html -->
+<div class="login-page">
+  <div class="login-overlay">
+    <div class="login-card">
+      <button class="close-btn" type="button" (click)="goToRegister()">✕</button>
+
+      <h2>Iniciar Sesión</h2>
+
+      <form (ngSubmit)="onSubmit()">
+        <label for="email">Correo</label>
+        <input
+          id="email"
+          type="email"
+          placeholder="Ingresa tu correo"
+          [(ngModel)]="email"
+          name="email"
+          required
+        />
+
+        <label for="password">Contraseña</label>
+        <input
+          id="password"
+          type="password"
+          placeholder="Ingresa tu contraseña"
+          [(ngModel)]="password"
+          name="password"
+          required
+        />
+
+        <div class="remember">
+          <label>
+            <input type="checkbox" />
+            Recordar contraseña
+          </label>
+        </div>
+
+        <button type="submit" class="btn-login" [disabled]="loading">
+          {{ loading ? 'Validando...' : 'Iniciar Sesión' }}
+        </button>
+
+        <!-- Mensajes pequeños (opcionales) -->
+        <p class="msg-ok" *ngIf="mensajeOk">{{ mensajeOk }}</p>
+        <p class="msg-error" *ngIf="mensajeError">{{ mensajeError }}</p>
+
+        <p class="register-link">
+          ¿No tienes una cuenta?
+          <!-- 👇 ahora es un "botón-link" con (click) -->
+          <button
+            type="button"
+            class="link-btn"
+            (click)="goToRegister()"
+          >
+            Regístrate ahora
+          </button>
+
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <!-- POPUP BONITO -->
+  <div class="modal-overlay" *ngIf="showModal">
+    <div class="modal-card" [ngClass]="modalType">
+      <div class="modal-icon">
+        <span *ngIf="modalType === 'success'">✔</span>
+        <span *ngIf="modalType === 'error'">✖</span>
+      </div>
+
+      <h2>{{ modalTitle }}</h2>
+      <p>{{ modalMessage }}</p>
+
+      <button class="modal-btn" (click)="closeModal()">Aceptar</button>
+    </div>
+  </div>
+</div>

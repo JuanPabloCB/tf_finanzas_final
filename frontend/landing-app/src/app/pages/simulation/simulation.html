@@ -1,0 +1,309 @@
+<!-- src/app/pages/simulation/simulation.html -->
+<div class="simulation-page">
+  <!-- HEADER -->
+  <header class="topbar">
+    <div class="logo" routerLink="/dashboard">
+      <div class="logo-icon">🏠</div>
+      <div class="logo-text">
+        <span>Áurea</span>
+        <span>Inmobiliaria</span>
+      </div>
+    </div>
+
+    <div class="user-actions">
+      <span class="user-name">{{ username }}</span>
+      <button class="btn-logout" (click)="onLogout()">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <!-- CONTENIDO -->
+  <main class="content">
+    <section class="sim-card">
+      <div class="sim-header">
+        <h1>Crear simulación de crédito</h1>
+        <p class="subtitle">
+          Selecciona un cliente, una vivienda y configura las condiciones del
+          crédito MiVivienda para generar la simulación.
+        </p>
+      </div>
+
+      <!-- FORMULARIO PRINCIPAL -->
+      <form
+        #simForm="ngForm"
+        class="sim-grid"
+        (ngSubmit)="onSimulate(simForm)"
+        novalidate
+      >
+        <!-- ================= COLUMNA IZQUIERDA ================= -->
+        <div class="col left-col">
+          <h2>1. Datos generales</h2>
+
+          <!-- BLOQUE CLIENTE -->
+          <div class="block">
+            <h3>Cliente</h3>
+            <label for="cliente">Selecciona un cliente *</label>
+            <select
+              id="cliente"
+              name="cliente"
+              required
+              [(ngModel)]="selectedClienteId"
+            >
+              <option [ngValue]="null" disabled>Elige un cliente</option>
+              <option *ngFor="let c of clientes" [ngValue]="c.id">
+                {{ c.dni }} - {{ c.nombres }} {{ c.apellidos }}
+              </option>
+            </select>
+
+            <div class="summary-card" *ngIf="selectedCliente as c">
+              <p><strong>DNI:</strong> {{ c.dni }}</p>
+              <p><strong>Nombre:</strong> {{ c.nombres }} {{ c.apellidos }}</p>
+              <p><strong>Ingreso mensual:</strong> S/ {{ c.ingreso_mensual }}</p>
+            </div>
+          </div>
+
+          <!-- BLOQUE VIVIENDA -->
+          <div class="block">
+            <h3>Inmueble</h3>
+            <label for="inmueble">Selecciona una vivienda *</label>
+            <select
+              id="inmueble"
+              name="inmueble"
+              required
+              [(ngModel)]="selectedInmuebleId"
+              (ngModelChange)="onInmuebleChange()"
+            >
+              <option [ngValue]="null" disabled>Elige una vivienda</option>
+              <option *ngFor="let h of inmuebles" [ngValue]="h.id">
+                {{ h.codigo_proyecto }} - {{ h.tipo }}
+                ({{ h.moneda_venta === 'USD' ? '$' : 'S/' }} {{ h.precio_venta }})
+              </option>
+            </select>
+
+            <div class="summary-card" *ngIf="selectedInmueble as h">
+              <p><strong>Código:</strong> {{ h.codigo_proyecto }}</p>
+              <p><strong>Tipo:</strong> {{ h.tipo }}</p>
+              <p><strong>Dirección:</strong> {{ h.direccion }}</p>
+              <p>
+                <strong>Valor referencia:</strong>
+                {{ h.moneda_venta === 'USD' ? '$' : 'S/' }} {{ h.precio_venta }}
+              </p>
+              <p><strong>Área:</strong> {{ h.area_m2 }} m²</p>
+            </div>
+          </div>
+
+          <!-- ======= PERIODO DE GRACIA (AHORA EN LA IZQUIERDA) ======= -->
+          <h2>2. Periodo de gracia</h2>
+          <div class="block">
+            <div class="grid-2">
+              <div class="field">
+                <label for="tipoPeriodoGracia">Tipo de gracia</label>
+                <select
+                  id="tipoPeriodoGracia"
+                  name="tipoPeriodoGracia"
+                  [(ngModel)]="tipoPeriodoGracia"
+                >
+                  <option value="Sin Gracia">Sin Gracia</option>
+                  <option value="Parcial">Parcial (solo interés)</option>
+                  <option value="Total">Total (no paga nada)</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="mesesGracia">Meses de gracia</label>
+                <input
+                  id="mesesGracia"
+                  name="mesesGracia"
+                  type="number"
+                  min="0"
+                  [(ngModel)]="mesesGracia"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= COLUMNA DERECHA ================= -->
+        <div class="col right-col">
+          <h2>3. Condiciones del crédito</h2>
+
+          <div class="grid-2">
+            <!-- MONEDA -->
+            <div class="field">
+              <label for="moneda">Moneda del préstamo</label>
+              <select
+                id="moneda"
+                name="moneda"
+                [(ngModel)]="moneda"
+              >
+                <option value="PEN">Soles (PEN)</option>
+                <option value="USD">Dólares (USD)</option>
+              </select>
+            </div>
+
+            <!-- ENTIDAD -->
+            <div class="field">
+              <label for="banco">Entidad financiera (opcional)</label>
+              <input
+                id="banco"
+                name="banco"
+                type="text"
+                [(ngModel)]="banco"
+                placeholder="BCP, BBVA, Scotiabank, etc."
+              />
+            </div>
+
+            <!-- PRECIO INMUEBLE -->
+            <div class="field">
+              <label for="precioInmueble">Precio del inmueble</label>
+              <input
+                id="precioInmueble"
+                name="precioInmueble"
+                type="number"
+                min="0"
+                step="0.01"
+                required
+                [(ngModel)]="precioInmueble"
+              />
+            </div>
+
+            <!-- PORCENTAJE INICIAL -->
+            <div class="field">
+              <label for="porcentajeInicial">% Inicial</label>
+              <select
+                id="porcentajeInicial"
+                name="porcentajeInicial"
+                [(ngModel)]="porcentajeInicial"
+              >
+                <option [ngValue]="10">10 %</option>
+                <option [ngValue]="15">15 %</option>
+                <option [ngValue]="20">20 %</option>
+              </select>
+            </div>
+
+            <!-- BONO BUEN PAGADOR -->
+            <div class="field">
+              <label for="bonoBBP">Bono Buen Pagador (S/)</label>
+              <input
+                id="bonoBBP"
+                name="bonoBBP"
+                type="number"
+                min="0"
+                step="0.01"
+                [(ngModel)]="bonoBuenPagador"
+              />
+            </div>
+
+            <!-- PLAZO AÑOS -->
+            <div class="field">
+              <label for="plazoAnhos">Plazo (años)</label>
+              <input
+                id="plazoAnhos"
+                name="plazoAnhos"
+                type="number"
+                min="1"
+                required
+                [(ngModel)]="plazoAnhos"
+              />
+            </div>
+
+            <!-- TIPO TASA -->
+            <div class="field">
+              <label for="tipoTasa">Tipo de tasa</label>
+              <select
+                id="tipoTasa"
+                name="tipoTasa"
+                [(ngModel)]="tipoTasa"
+              >
+                <option value="EFECTIVA">Efectiva anual (TEA)</option>
+                <option value="NOMINAL">Nominal anual (TNA)</option>
+              </select>
+            </div>
+
+            <!-- VALOR TASA -->
+            <div class="field">
+              <label for="valorTasa">Valor de la tasa (%)</label>
+              <input
+                id="valorTasa"
+                name="valorTasa"
+                type="number"
+                min="0"
+                step="0.01"
+                required
+                [(ngModel)]="valorTasa"
+              />
+            </div>
+
+            <!-- CAPITALIZACIÓN (SOLO SI TNA) -->
+            <div class="field" *ngIf="tipoTasa === 'NOMINAL'">
+              <label for="capitalizacionDias">Capitalización (días)</label>
+              <input
+                id="capitalizacionDias"
+                name="capitalizacionDias"
+                type="number"
+                min="1"
+                [(ngModel)]="capitalizacionDias"
+              />
+            </div>
+          </div>
+
+          <!-- ======= RESULTADO ESTIMADO ======= -->
+          <h2 class="res-title">4. Resultado estimado</h2>
+
+          <div class="result-card">
+            <p>
+              <strong>Monto financiado:</strong>
+              <span *ngIf="montoFinanciado !== null">
+                {{ moneda === 'PEN' ? 'S/' : '$' }} {{ montoFinanciado }}
+              </span>
+            <span *ngIf="montoFinanciado === null">—</span>
+            </p>
+
+            <p>
+              <strong>Cuota mensual estimada:</strong>
+              <span *ngIf="cuotaMensual !== null">
+                {{ moneda === 'PEN' ? 'S/' : '$' }} {{ cuotaMensual }}
+              </span>
+              <span *ngIf="cuotaMensual === null">—</span>
+            </p>
+
+            <p *ngIf="tcea !== null">
+              <strong>TCEA aproximada:</strong> {{ tcea }} %
+            </p>
+
+            <p class="small-text">
+              Este cálculo es referencial y se basa en el cronograma generado
+              por el backend. No sustituye la evaluación final de la entidad financiera.
+            </p>
+          </div>
+
+          <!-- BOTONES -->
+          <div class="actions">
+            <button type="submit" class="btn-simulate">
+              Generar simulación
+            </button>
+            <button
+              type="button"
+              class="btn-back"
+              routerLink="/dashboard"
+            >
+              Volver al dashboard
+            </button>
+          </div>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <!-- POPUP GENÉRICO -->
+  <div class="modal-overlay" *ngIf="showModal">
+    <div class="modal-card" [ngClass]="modalType">
+      <div class="modal-icon">
+        <span *ngIf="modalType === 'success'">✔</span>
+        <span *ngIf="modalType === 'error'">✖</span>
+      </div>
+      <h2>{{ modalTitle }}</h2>
+      <p>{{ modalMessage }}</p>
+      <button class="modal-btn" (click)="closeModal()">Aceptar</button>
+    </div>
+  </div>
+</div>

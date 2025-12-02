@@ -1,0 +1,311 @@
+/* ===== OCUPAR PANTALLA COMPLETA ===== */
+:host {
+  display: block;
+  height: 100vh;
+}
+
+/* ===== FONDO GENERAL ===== */
+.register-page {
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-image: url('../../../assets/img/galaxia.jpg');
+  background-size: cover;
+  background-position: center;
+  color: #ffffff;
+  position: relative; /* para asegurar stacking correcto con el modal */
+}
+
+/* ===== HEADER ===== */
+.topbar {
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 3rem;
+  background: #f5ecff;
+}
+
+/* Logo */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.logo-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #00d86a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+  font-weight: 700;
+  font-size: 18px;
+  color: #00d86a;
+}
+
+/* Menú */
+.menu {
+  display: flex;
+  gap: 2.5rem;
+  font-weight: 600;
+}
+
+.menu a {
+  text-decoration: none;
+  color: #222;
+  font-size: 15px;
+}
+
+.menu a:hover {
+  text-decoration: underline;
+}
+
+/* Botón Iniciar Sesión */
+.btn-login {
+  border: none;
+  outline: none;
+  padding: 0.45rem 1.9rem;
+  border-radius: 999px;
+  background: #00d86a;
+  color: #000;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.btn-login:hover {
+  filter: brightness(1.05);
+}
+
+/* ===== CONTENIDO ===== */
+.content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6rem;
+  padding: 3rem 6rem 4rem;
+}
+
+/* Formulario */
+.form-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  width: 340px;
+  gap: 0.9rem;
+}
+
+.register-form input {
+  border: none;
+  outline: none;
+  padding: 0.7rem 1.2rem;
+  border-radius: 999px;
+  font-size: 14px;
+  color: #000;
+}
+
+/* Botón Registrar */
+.btn-register {
+  margin-top: 1.2rem;
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
+  border: none;
+  outline: none;
+  background: #00d86a;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  color: #000;
+}
+
+.btn-register:hover {
+  filter: brightness(1.07);
+}
+
+/* Botón deshabilitado (por si lo usas luego) */
+.btn-register[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Ilustración derecha */
+.illustration img {
+  max-width: 260px;
+  width: 100%;
+}
+
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+.image-container img {
+  width: 320px;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.7));
+}
+
+/* Mensajes textuales debajo del botón (opcional) */
+.msg-ok {
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  text-align: center;
+  color: #00ff88;
+}
+
+.msg-error {
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  text-align: center;
+  color: #ff4d4d;
+}
+
+/* ===== POPUP FULLSCREEN ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0; /* top, right, bottom, left = 0 */
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+/* Tarjeta del popup */
+.modal-card {
+  background: #050816;
+  padding: 32px 40px;
+  border-radius: 20px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.8);
+  text-align: center;
+  max-width: 380px;
+  width: 90%;
+  color: #f9fafb;
+  position: relative;
+  animation: modalFadeIn 0.2s ease-out;
+}
+
+/* Borde según tipo */
+.modal-card.success {
+  border-top: 4px solid #22c55e;
+}
+
+.modal-card.error {
+  border-top: 4px solid #ef4444;
+}
+
+/* Icono */
+.modal-icon {
+  width: 70px;
+  height: 70px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  font-size: 34px;
+  background: rgba(34, 197, 94, 0.18);
+  color: #22c55e;
+}
+
+.modal-card.error .modal-icon {
+  background: rgba(239, 68, 68, 0.18);
+  color: #ef4444;
+}
+
+/* Títulos y texto */
+.modal-card h2 {
+  margin: 0 0 8px;
+  font-size: 1.5rem;
+}
+
+.modal-card p {
+  margin: 0 0 22px;
+  font-size: 0.98rem;
+  opacity: 0.95;
+}
+
+/* Botón Aceptar */
+.modal-btn {
+  padding: 10px 26px;
+  border: none;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.95rem;
+  background: #22c55e;
+  color: #04101f;
+  box-shadow: 0 10px 25px rgba(34, 197, 94, 0.35);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.15s;
+}
+
+.modal-card.error .modal-btn {
+  background: #ef4444;
+  color: #fef2f2;
+  box-shadow: 0 10px 25px rgba(239, 68, 68, 0.35);
+}
+
+.modal-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.7);
+}
+
+.modal-btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* Animación del popup */
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  .content {
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2rem;
+  }
+
+  .illustration {
+    display: none;
+  }
+
+  .topbar {
+    padding: 0 1.5rem;
+  }
+
+  .menu {
+    gap: 1.2rem;
+    font-size: 13px;
+  }
+}

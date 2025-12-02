@@ -1,0 +1,90 @@
+<div class="register-page">
+  <!-- Barra superior -->
+  <header class="topbar">
+    <div class="logo">
+      <div class="logo-icon">🏠</div>
+      <div class="logo-text">
+        <span>Áurea</span>
+        <span>Inmobiliaria</span>
+      </div>
+    </div>
+
+    <nav class="menu">
+      <a href="#">Sobre Nosotros</a>
+      <a href="#">Como funciona?</a>
+      <a href="#">Contacto</a>
+    </nav>
+
+    <button class="btn-login" routerLink="/login">Iniciar Sesion</button>
+  </header>
+
+  <!-- Contenido principal -->
+  <main class="content">
+    <section class="form-wrapper">
+      <form class="register-form" novalidate>
+        <input
+          type="text"
+          placeholder="Nombre"
+          [(ngModel)]="name"
+          name="name"
+        />
+
+        <input
+          type="email"
+          placeholder="Correo electrónico"
+          [(ngModel)]="email"
+          name="email"
+        />
+
+        <input
+          type="password"
+          placeholder="Contraseña"
+          [(ngModel)]="password"
+          name="password"
+        />
+
+        <input
+          type="password"
+          placeholder="Confirmar contraseña"
+          [(ngModel)]="password2"
+          name="password2"
+        />
+
+        <!-- BOTÓN REGISTRAR: llama a onSubmit() -->
+        <button
+          type="button"
+          class="btn-register"
+          (click)="onSubmit()"
+          [disabled]="isSubmitting"
+        >
+          Registrar
+        </button>
+
+        <!-- Mensajes debajo del botón (opcional) -->
+        <p class="msg-ok" *ngIf="mensajeOk">{{ mensajeOk }}</p>
+        <p class="msg-error" *ngIf="mensajeError">{{ mensajeError }}</p>
+      </form>
+    </section>
+
+    <section class="illustration">
+      <div class="image-container">
+        <img src="../../../assets/img/ahorro_tiempo.png" alt="Ahorro y tiempo" />
+      </div>
+    </section>
+  </main>
+
+  <!-- POPUP -->
+  <div class="modal-overlay" *ngIf="showModal">
+    <div class="modal-card" [ngClass]="modalType">
+      <div class="modal-icon">
+        <span *ngIf="modalType === 'success'">✔</span>
+        <span *ngIf="modalType === 'error'">✖</span>
+      </div>
+
+      <h2>{{ modalTitle }}</h2>
+      <p>{{ modalMessage }}</p>
+
+      <button class="modal-btn" (click)="closeModal()">Aceptar</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,177 @@
+<!-- src/app/pages/client-register/client-register.html -->
+<div class="register-client-page">
+  <!-- HEADER -->
+  <header class="topbar">
+    <div class="logo" routerLink="/dashboard">
+      <div class="logo-icon">🏠</div>
+      <div class="logo-text">
+        <span>Áurea</span>
+        <span>Inmobiliaria</span>
+      </div>
+    </div>
+
+    <div class="user-actions">
+      <span class="user-name">{{ username }}</span>
+      <button class="btn-logout" routerLink="/login">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <!-- CONTENIDO -->
+  <main class="content">
+    <div class="content-inner">
+      <!-- Botón volver -->
+      <div class="top-actions">
+        <button
+          type="button"
+          class="btn-back"
+          (click)="goToDashboard()"
+        >
+          ← Volver al dashboard
+        </button>
+      </div>
+
+      <section class="form-card">
+        <h1>Registrar Cliente</h1>
+        <p class="subtitle">
+          Ingresa los datos del cliente para poder generar simulaciones de crédito MiVivienda.
+        </p>
+
+        <form #clientForm="ngForm" (ngSubmit)="onSubmit(clientForm)" novalidate>
+          <!-- FILA 1: DNI + Dirección -->
+          <div class="form-row">
+            <div class="form-field">
+              <label for="dni">DNI *</label>
+              <input
+                id="dni"
+                name="dni"
+                type="text"
+                maxlength="8"
+                required
+                pattern="^[0-9]{8}$"
+                [(ngModel)]="client.dni"
+              />
+            </div>
+
+            <div class="form-field">
+              <label for="address">Dirección actual *</label>
+              <input
+                id="address"
+                name="address"
+                type="text"
+                required
+                [(ngModel)]="client.address"
+              />
+            </div>
+          </div>
+
+          <!-- FILA 2: Nombres y apellidos -->
+          <div class="form-row">
+            <div class="form-field">
+              <label for="first_name">Nombres *</label>
+              <input
+                id="first_name"
+                name="first_name"
+                type="text"
+                required
+                [(ngModel)]="client.first_name"
+              />
+            </div>
+
+            <div class="form-field">
+              <label for="last_name_p">Apellido paterno *</label>
+              <input
+                id="last_name_p"
+                name="last_name_p"
+                type="text"
+                required
+                [(ngModel)]="client.last_name_p"
+              />
+            </div>
+
+            <div class="form-field">
+              <label for="last_name_m">Apellido materno *</label>
+              <input
+                id="last_name_m"
+                name="last_name_m"
+                type="text"
+                required
+                [(ngModel)]="client.last_name_m"
+              />
+            </div>
+          </div>
+
+          <!-- FILA 3: Contacto -->
+          <div class="form-row">
+            <div class="form-field">
+              <label for="email">Correo electrónico *</label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                [(ngModel)]="client.email"
+              />
+            </div>
+
+            <div class="form-field">
+              <label for="phone">Celular *</label>
+              <input
+                id="phone"
+                name="phone"
+                type="text"
+                maxlength="9"
+                required
+                pattern="^[0-9]{9}$"
+                [(ngModel)]="client.phone"
+              />
+            </div>
+          </div>
+
+          <!-- FILA 4: Ingreso mensual -->
+          <div class="form-row">
+            <div class="form-field">
+              <label for="monthly_income">Ingreso mensual neto (S/.) *</label>
+              <input
+                id="monthly_income"
+                name="monthly_income"
+                type="number"
+                min="0"
+                step="0.01"
+                required
+                [(ngModel)]="client.monthly_income"
+              />
+            </div>
+          </div>
+
+          <!-- BOTONES -->
+          <div class="actions">
+            <button type="submit" class="btn-save">
+              Guardar información
+            </button>
+
+            <button
+              type="button"
+              class="btn-cancel"
+              (click)="clearForm()"
+            >
+              Borrar todo
+            </button>
+          </div>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <!-- POPUP -->
+  <div class="modal-overlay" *ngIf="showModal">
+    <div class="modal-card" [ngClass]="modalType">
+      <div class="modal-icon">
+        <span *ngIf="modalType === 'success'">✔</span>
+        <span *ngIf="modalType === 'error'">✖</span>
+      </div>
+      <h2>{{ modalTitle }}</h2>
+      <p>{{ modalMessage }}</p>
+      <button class="modal-btn" (click)="closeModal()">Aceptar</button>
+    </div>
+  </div>
+</div>

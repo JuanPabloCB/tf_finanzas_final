@@ -1,0 +1,206 @@
+<div class="dashboard-page">
+  <!-- HEADER -->
+  <header class="topbar">
+    <div class="logo">
+      <div class="logo-icon">🏠</div>
+      <div class="logo-text">
+        <span>Áurea</span>
+        <span>Inmobiliaria</span>
+      </div>
+    </div>
+
+    <div class="user-actions">
+      <!-- Este nombre lo puedes ligar al backend -->
+      <span class="user-name">{{ username }}</span>
+
+      <button
+        type="button"
+        class="btn-logout"
+        (click)="onLogout()"
+      >
+        Cerrar sesión
+      </button>
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="dashboard-main">
+    <div class="dashboard-grid">
+      <!-- KPIs SUPERIORES -->
+      <section class="kpi-group">
+        <div class="card kpi-card">
+          <p class="kpi-value">
+            {{ avgRate | number:'1.1-2' }}%
+          </p>
+          <p class="kpi-label">Tasa promedio</p>
+        </div>
+
+        <div class="card kpi-card">
+          <p class="kpi-value">
+            {{ totalClients | number:'1.0-0' }}
+          </p>
+          <p class="kpi-label">Clientes registrados</p>
+        </div>
+
+        <div class="card kpi-card">
+          <p class="kpi-value">
+            S/ {{ avgQuota | number:'1.0-2' }}
+          </p>
+          <p class="kpi-label">Cuota promedio</p>
+        </div>
+      </section>
+
+      <!-- NUEVA SIMULACIÓN -->
+      <section class="card new-sim-card">
+        <h2>Nueva simulación de crédito</h2>
+        <p class="new-sim-text">
+          Configura el préstamo, aplica bonos y genera el plan de pagos
+        </p>
+
+        <button
+          type="button"
+          class="btn-primary"
+          (click)="onNewSimulation()"
+        >
+          Nueva simulación
+        </button>
+      </section>
+
+      <!-- GESTIÓN -->
+      <section class="card gestion-card">
+        <h3>Gestión</h3>
+
+        <div class="gestion-tabs">
+          <button
+            type="button"
+            class="tab active"
+            (click)="onViewHouses()"
+          >
+            Viviendas
+          </button>
+
+          <button
+            type="button"
+            class="tab"
+            (click)="onViewClients()"
+          >
+            Clientes
+          </button>
+        </div>
+      </section>
+
+      <!-- BOTONES GRANDES (2x2) -->
+      <section class="actions-grid">
+        <!-- Registrar Cliente -->
+        <button
+          type="button"
+          class="card action-card"
+          (click)="onRegisterClient()"
+        >
+          <div class="action-icon">
+            <img
+              src="../../../assets/img/user.png"
+              alt="Registrar cliente"
+            />
+          </div>
+          <p class="action-title">Registrar Cliente</p>
+        </button>
+
+        <!-- Registrar Vivienda -->
+        <button
+          type="button"
+          class="card action-card"
+          (click)="onRegisterHouse()"
+        >
+          <div class="action-icon">
+            <img
+              src="../../../assets/img/home-chimney.png"
+              alt="Registrar vivienda"
+            />
+          </div>
+          <p class="action-title">Registrar Vivienda</p>
+        </button>
+
+        <!-- Plan de pagos -->
+        <button
+          type="button"
+          class="card action-card action-wide"
+          (click)="onViewPaymentPlans()"
+        >
+          <div class="action-icon">
+            <img
+              src="../../../assets/img/bank.png"
+              alt="Plan de pagos"
+            />
+          </div>
+          <div class="action-text">
+            <p class="action-title">Plan de pagos</p>
+            <p class="action-subtitle">
+              Accede a los cronogramas generados según simulaciones anteriores.
+            </p>
+          </div>
+        </button>
+
+        <!-- Reportes -->
+        <button
+          type="button"
+          class="card action-card action-wide"
+          (click)="onViewReports()"
+        >
+          <div class="action-icon">
+            <img
+              src="../../../assets/img/document.png"
+              alt="Reportes"
+            />
+          </div>
+          <div class="action-text">
+            <p class="action-title">Reportes</p>
+            <p class="action-subtitle">
+              Descarga el plan de pagos, reportes y PDFs generados.
+            </p>
+          </div>
+        </button>
+      </section>
+
+      <!-- HISTORIAL DE SIMULACIONES -->
+      <section class="card history-card">
+        <h3>Historial de simulaciones</h3>
+
+        <div class="history-table">
+          <div class="history-header">
+            <span>Cliente</span>
+            <span>Monto</span>
+            <span>Fecha</span>
+          </div>
+
+          <!-- Filas de ejemplo (luego las puedes reemplazar con datos reales) -->
+          <div class="history-row">
+            <span>Arias Lóoez</span>
+            <span>S/ 2,500,000</span>
+            <span>24/04/2024</span>
+          </div>
+
+          <div class="history-row">
+            <span>Carlos Torres</span>
+            <span>S/ 1,130,000</span>
+            <span>16/04/2024</span>
+          </div>
+
+          <div class="history-row">
+            <span>Marlis Gomez</span>
+            <span>S/ 580,000</span>
+            <span>16/04/2024</span>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="onViewHistory()"
+        >
+          Ver historial
+        </button>
+      </section>
+    </div>
+  </main>
+</div>

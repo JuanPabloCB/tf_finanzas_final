@@ -1,0 +1,384 @@
+/* ===== OCUPAR PANTALLA COMPLETA ===== */
+:host {
+  display: block;
+  height: 100vh;
+}
+
+/* ===== FONDO GENERAL ===== */
+.dashboard-page {
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-image: url('../../../assets/img/galaxia.jpg');
+  background-size: cover;
+  background-position: center;
+  color: #ffffff;
+  overflow: hidden; /* evita scroll vertical en desktop */
+}
+
+/* ===== HEADER (MISMO ESTILO BASE QUE REGISTER, PERO OSCURO) ===== */
+.topbar {
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 3rem;
+  background: #050816;
+}
+
+/* Logo */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.logo-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #00d86a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+  font-weight: 700;
+  font-size: 18px;
+  color: #ffffff;
+}
+
+/* Usuario + botón cerrar sesión */
+.user-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-name {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.btn-logout {
+  border-radius: 999px;
+  border: 1px solid #ffffff33;
+  padding: 0.4rem 1.4rem;
+  background: #ef4444;
+  color: #fff;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.btn-logout:hover {
+  filter: brightness(1.05);
+}
+
+/* ===== CONTENIDO PRINCIPAL ===== */
+.dashboard-main {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  padding: 2.3rem 3rem 2.8rem;
+}
+
+/* GRID GENERAL DEL DASHBOARD */
+.dashboard-grid {
+  width: 100%;
+  max-width: 1200px;
+  display: grid;
+  grid-template-columns: 2.1fr 1.1fr;
+  grid-template-rows: auto auto 1fr;
+  grid-template-areas:
+    "kpis newSim"
+    "gestion newSim"
+    "actions history";
+  gap: 1.6rem 1.6rem;
+}
+
+/* Tarjetas base */
+.card {
+  background: rgba(3, 7, 18, 0.96); /* casi negro, opaco */
+  border-radius: 22px;
+  padding: 1.6rem 1.8rem;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.7);
+}
+
+/* ===== KPIs ===== */
+.kpi-group {
+  grid-area: kpis;
+  display: flex;
+  gap: 1.4rem;
+}
+
+.kpi-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  border-radius: 22px;
+}
+
+.kpi-value {
+  font-size: 2.6rem;
+  font-weight: 700;
+  margin: 0 0 0.3rem;
+}
+
+.kpi-label {
+  margin: 0;
+  font-size: 0.95rem;
+  opacity: 0.85;
+}
+
+/* ===== NUEVA SIMULACIÓN ===== */
+.new-sim-card {
+  grid-area: newSim;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.new-sim-card h2 {
+  margin: 0 0 0.6rem;
+  font-size: 1.4rem;
+}
+
+.new-sim-text {
+  margin: 0 0 1.4rem;
+  font-size: 0.95rem;
+  opacity: 0.9;
+  max-width: 320px;
+}
+
+.btn-primary {
+  border: none;
+  outline: none;
+  border-radius: 999px;
+  padding: 0.7rem 1.8rem;
+  background: #059669;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.08);
+}
+
+/* ===== GESTIÓN ===== */
+.gestion-card {
+  grid-area: gestion;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.gestion-card h3 {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+}
+
+.gestion-tabs {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.gestion-tabs .tab {
+  min-width: 160px;
+  border-radius: 999px;
+  border: none;
+  padding: 0.6rem 1.4rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: #a8555a;
+  color: #fff;
+}
+
+.gestion-tabs .tab.active {
+  background: #b8585c;
+}
+
+/* ===== BOTONES GRANDES (ACCIONES) ===== */
+.actions-grid {
+  grid-area: actions;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 1.3rem;
+}
+
+.action-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background: rgba(3, 7, 18, 0.96);
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease,
+    background 0.12s ease;
+  text-align: center;
+  color: #fff;              /* <--- fuerza texto blanco dentro de la tarjeta */
+}
+.action-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.9);
+  background: rgba(15, 23, 42, 0.96);
+}
+
+.action-icon {
+  margin-bottom: 0.7rem;
+}
+
+.action-icon img {
+  width: 54px;
+  height: 54px;
+  object-fit: contain;
+  /* hace que los íconos negros se vean BLANCOS */
+  filter: brightness(0) invert(1);
+}
+
+
+.action-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #fff;              /* <--- asegura blanco en títulos */
+}
+.action-subtitle {
+  margin: 0.4rem 0 0;
+  font-size: 0.84rem;
+  opacity: 0.85;
+  max-width: 220px;
+  color: #fff;              /* <--- blanco en subtítulos */
+}
+.action-wide {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+  text-align: left;
+}
+
+.action-wide .action-icon {
+  margin-bottom: 0;
+}
+
+.action-text {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== HISTORIAL DE SIMULACIONES ===== */
+.history-card {
+  grid-area: history;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.history-card h3 {
+  margin: 0 0 1.1rem;
+  font-size: 1.1rem;
+}
+
+.history-table {
+  background: #020617;
+  border-radius: 14px;
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+}
+
+.history-header,
+.history-row {
+  display: grid;
+  grid-template-columns: 1.4fr 1.1fr 0.9fr;
+  column-gap: 0.7rem;
+}
+
+.history-header {
+  font-weight: 600;
+  opacity: 0.9;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid #ffffff22;
+  margin-bottom: 0.4rem;
+}
+
+.history-row {
+  padding: 0.25rem 0;
+  opacity: 0.9;
+}
+
+/* Botón Ver historial */
+.btn-secondary {
+  border: none;
+  outline: none;
+  margin-top: 1rem;
+  align-self: center;
+  padding: 0.6rem 2.5rem;
+  border-radius: 999px;
+  background: #a8555a;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  filter: brightness(1.06);
+}
+
+/* ===== RESPONSIVE BÁSICO (TABLET / LAPTOP PEQUEÑA) ===== */
+@media (max-width: 1100px) {
+  .dashboard-main {
+    padding: 2rem;
+  }
+
+  .dashboard-grid {
+    max-width: 100%;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto auto auto;
+    grid-template-areas:
+      "kpis"
+      "newSim"
+      "gestion"
+      "actions"
+      "history";
+  }
+
+  .history-card {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 900px) {
+  .topbar {
+    padding: 0 1.5rem;
+  }
+
+  .dashboard-main {
+    padding: 1.8rem 1.3rem;
+  }
+
+  .kpi-group {
+    flex-direction: column;
+  }
+
+  .dashboard-page {
+    overflow-y: auto; /* en pantallas muy pequeñas permitimos scroll */
+  }
+}

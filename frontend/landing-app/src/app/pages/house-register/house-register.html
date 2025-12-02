@@ -1,0 +1,153 @@
+<!-- src/app/pages/house-register/house-register.html -->
+<div class="register-house-page">
+  <!-- HEADER -->
+  <header class="topbar">
+    <div class="logo" routerLink="/dashboard">
+      <div class="logo-icon">🏠</div>
+      <div class="logo-text">
+        <span>Áurea</span>
+        <span>Inmobiliaria</span>
+      </div>
+    </div>
+
+    <div class="user-actions">
+      <span class="user-name">{{ username }}</span>
+      <button class="btn-logout" (click)="onLogout()">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <!-- CONTENIDO -->
+  <main class="content">
+    <div class="content-inner">
+      <!-- Botón volver -->
+      <div class="top-actions">
+        <button type="button" class="btn-back" (click)="goToDashboard()">
+          ← Volver al dashboard
+        </button>
+      </div>
+
+      <section class="form-card">
+        <h1>Registrar Vivienda</h1>
+        <p class="subtitle">
+          Registra los datos básicos del inmueble para usarlos en las
+          simulaciones de crédito MiVivienda.
+        </p>
+
+        <form #houseForm="ngForm" (ngSubmit)="onSubmit(houseForm)" novalidate>
+          <!-- FILA 1: Código + Tipo -->
+          <div class="form-row">
+            <div class="form-field">
+              <label for="codigo_proyecto">Código de proyecto *</label>
+              <input
+                id="codigo_proyecto"
+                name="codigo_proyecto"
+                type="text"
+                required
+                [(ngModel)]="house.codigo_proyecto"
+              />
+            </div>
+
+            <div class="form-field">
+              <label for="tipo">Tipo de inmueble *</label>
+              <select
+                id="tipo"
+                name="tipo"
+                required
+                [(ngModel)]="house.tipo"
+              >
+                <option value="" disabled selected>Selecciona una opción</option>
+                <option value="departamento">Departamento</option>
+                <option value="casa">Casa</option>
+                <option value="duplex">Dúplex</option>
+                <option value="flat">Flat</option>
+                <option value="terreno">Terreno</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- FILA 2: Dirección -->
+          <div class="form-row">
+            <div class="form-field">
+              <label for="direccion">Dirección exacta *</label>
+              <input
+                id="direccion"
+                name="direccion"
+                type="text"
+                required
+                [(ngModel)]="house.direccion"
+              />
+            </div>
+          </div>
+
+          <!-- FILA 3: Área + Precio + Moneda -->
+          <div class="form-row">
+            <div class="form-field">
+              <label for="area_m2">Área (m²) *</label>
+              <input
+                id="area_m2"
+                name="area_m2"
+                type="number"
+                min="0"
+                step="0.01"
+                required
+                [(ngModel)]="house.area_m2"
+              />
+            </div>
+
+            <div class="form-field">
+              <label for="precio_venta">Precio de venta *</label>
+              <input
+                id="precio_venta"
+                name="precio_venta"
+                type="number"
+                min="0"
+                step="0.01"
+                required
+                [(ngModel)]="house.precio_venta"
+              />
+            </div>
+
+            <div class="form-field">
+              <label for="moneda_venta">Moneda *</label>
+              <select
+                id="moneda_venta"
+                name="moneda_venta"
+                required
+                [(ngModel)]="house.moneda_venta"
+              >
+                <option value="PEN">Soles (PEN)</option>
+                <option value="USD">Dólares (USD)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- BOTONES -->
+          <div class="actions">
+            <button type="submit" class="btn-save">Guardar información</button>
+
+            <button
+              type="button"
+              class="btn-cancel"
+              (click)="clearForm()"
+            >
+              Borrar todo
+            </button>
+          </div>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <!-- POPUP -->
+  <div class="modal-overlay" *ngIf="showModal">
+    <div class="modal-card" [ngClass]="modalType">
+      <div class="modal-icon">
+        <span *ngIf="modalType === 'success'">✔</span>
+        <span *ngIf="modalType === 'error'">✖</span>
+      </div>
+      <h2>{{ modalTitle }}</h2>
+      <p>{{ modalMessage }}</p>
+      <button class="modal-btn" (click)="closeModal()">Aceptar</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,235 @@
+/* Fondo de la página de login: misma galaxia que el register */
+.login-page {
+  position: relative;
+  min-height: 100vh;
+  background-image: url('../../../assets/img/galaxia.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+/* Capa oscura + centrado */
+.login-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top, #ffffff11 0, #000000aa 60%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Tarjeta de login */
+.login-card {
+  width: 380px;                 /* un poquito más ancho para que se vea simétrico */
+  padding: 26px 32px 30px;      /* padding igual en ambos lados */
+  border-radius: 18px;
+  background: rgba(10, 22, 40, 0.9);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.7);
+  color: #f5f7ff;
+  position: relative;
+}
+
+/* Botón X */
+.close-btn {
+  position: absolute;
+  right: 12px;
+  top: 10px;
+  border: none;
+  background: transparent;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* Título */
+.login-card h2 {
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+/* Inputs */
+.login-card label {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.login-card input[type='email'],
+.login-card input[type='password'] {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  border-radius: 999px;
+  border: none;
+  outline: none;
+  background: rgba(255, 255, 255, 0.9);
+  color: #222;
+}
+
+/* Recordar contraseña */
+.remember {
+  margin-bottom: 14px;
+  font-size: 13px;
+}
+
+/* Botón Login */
+.btn-login {
+  width: 100%;
+  padding: 10px 0;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  background: #03c964;
+  color: #fff;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.btn-login:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+/* Mensajes textuales (por si los quisieras usar en el futuro) */
+.msg-ok {
+  font-size: 13px;
+  color: #7bff9f;
+  margin: 6px 0;
+}
+
+.msg-error {
+  font-size: 13px;
+  color: #ff8080;
+  margin: 6px 0;
+}
+
+/* Texto "¿No tienes una cuenta?" */
+.register-link {
+  margin-top: 8px;
+  font-size: 13px;
+  text-align: center;
+  color: #fff;
+}
+
+/* Botón que se ve como link */
+.link-btn {
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 0 0 4px !important;
+  font-size: 13px;
+  font-weight: 600;
+  color: #03c964;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.link-btn:hover {
+  text-decoration: underline;
+}
+
+/* ===== POPUP FULLSCREEN (IGUAL QUE EN REGISTER) ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+/* Tarjeta del popup */
+.modal-card {
+  background: #050816;
+  padding: 32px 40px;
+  border-radius: 20px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.8);
+  text-align: center;
+  max-width: 380px;
+  width: 90%;
+  color: #f9fafb;
+  position: relative;
+  animation: modalFadeIn 0.2s ease-out;
+}
+
+/* Borde según tipo */
+.modal-card.success {
+  border-top: 4px solid #22c55e;
+}
+
+.modal-card.error {
+  border-top: 4px solid #ef4444;
+}
+
+/* Icono */
+.modal-icon {
+  width: 70px;
+  height: 70px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  font-size: 34px;
+  background: rgba(34, 197, 94, 0.18);
+  color: #22c55e;
+}
+
+.modal-card.error .modal-icon {
+  background: rgba(239, 68, 68, 0.18);
+  color: #ef4444;
+}
+
+/* Títulos y texto del popup */
+.modal-card h2 {
+  margin: 0 0 8px;
+  font-size: 1.5rem;
+}
+
+.modal-card p {
+  margin: 0 0 22px;
+  font-size: 0.98rem;
+  opacity: 0.95;
+}
+
+/* Botón Aceptar del popup */
+.modal-btn {
+  padding: 10px 26px;
+  border: none;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.95rem;
+  background: #22c55e;
+  color: #04101f;
+  box-shadow: 0 10px 25px rgba(34, 197, 94, 0.35);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.15s;
+}
+
+.modal-card.error .modal-btn {
+  background: #ef4444;
+  color: #fef2f2;
+  box-shadow: 0 10px 25px rgba(239, 68, 68, 0.35);
+}
+
+.modal-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.7);
+}
+
+.modal-btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* Animación del popup */
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

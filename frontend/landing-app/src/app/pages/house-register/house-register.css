@@ -1,0 +1,304 @@
+/* ===== OCUPAR TODA LA PANTALLA ===== */
+:host {
+  display: block;
+  height: 100vh;
+}
+
+/* ===== FONDO GENERAL ===== */
+.register-house-page {
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-image: url('../../../assets/img/galaxia.jpg');
+  background-size: cover;
+  background-position: center;
+  color: #ffffff;
+}
+
+/* ===== HEADER ===== */
+.topbar {
+  height: 70px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 3rem;
+  background: #050816;
+  box-sizing: border-box;
+}
+
+/* Logo */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 4px;
+}
+
+.logo-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #00d86a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+  font-weight: 700;
+  font-size: 18px;
+  color: #ffffff;
+}
+
+.user-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #f9fafb;
+}
+
+.btn-logout {
+  border: none;
+  outline: none;
+  padding: 0.45rem 1.9rem;
+  border-radius: 999px;
+  background: #ef4444;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.btn-logout:hover {
+  filter: brightness(1.05);
+}
+
+/* ===== CONTENIDO ===== */
+.content {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 2.3rem 3rem 2.8rem;
+  box-sizing: border-box;
+}
+
+.content-inner {
+  width: 100%;
+  max-width: 1100px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Botón volver al dashboard arriba */
+.top-actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.btn-back {
+  border-radius: 999px;
+  border: 1px solid #ffffff55;
+  padding: 0.45rem 1.5rem;
+  background: rgba(15, 23, 42, 0.9);
+  color: #e5e7eb;
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.btn-back:hover {
+  filter: brightness(1.08);
+}
+
+/* Tarjeta del formulario */
+.form-card {
+  background: rgba(3, 7, 18, 0.96);
+  border-radius: 24px;
+  padding: 2rem 2.4rem;
+  width: 100%;
+  max-width: 980px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85);
+}
+
+.form-card h1 {
+  margin: 0 0 0.4rem;
+  font-size: 1.6rem;
+}
+
+.subtitle {
+  margin: 0 0 1.8rem;
+  font-size: 0.95rem;
+  opacity: 0.85;
+}
+
+/* Filas y campos */
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.2rem;
+  margin-bottom: 1.1rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.form-field label {
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+.form-field input,
+.form-field select {
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  outline: none;
+  padding: 0.55rem 1.1rem;
+  font-size: 0.9rem;
+  background: #020617;
+  color: #f9fafb;
+  transition: all 0.15s ease;
+}
+
+.form-field input:focus,
+.form-field select:focus {
+  border: 2px solid #22c55e;
+  box-shadow: 0 0 6px #22c55e88;
+  background: #030b1c;
+}
+
+/* ===== BOTONES ===== */
+.actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+.btn-save {
+  border: none;
+  outline: none;
+  border-radius: 999px;
+  padding: 0.65rem 1.8rem;
+  background: #22c55e;
+  color: #04101f;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.btn-cancel {
+  border-radius: 999px;
+  border: 1px solid #ffffff55;
+  padding: 0.6rem 1.5rem;
+  background: transparent;
+  color: #e5e7eb;
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+/* ===== MODAL (POPUP) ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal-card {
+  background: #050814;
+  color: #ffffff;
+  padding: 24px 32px;
+  border-radius: 16px;
+  box-shadow: 0 14px 45px rgba(0, 0, 0, 0.7);
+  width: min(420px, 90vw);
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.modal-card.success {
+  border-color: #00d86a;
+}
+
+.modal-card.error {
+  border-color: #ff4b4b;
+}
+
+.modal-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  margin: 0 auto 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  background: rgba(0, 216, 106, 0.15);
+}
+
+.modal-card.error .modal-icon {
+  background: rgba(255, 75, 75, 0.15);
+}
+
+.modal-card h2 {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.modal-card p {
+  margin: 0 0 16px;
+  font-size: 14px;
+  opacity: 0.92;
+}
+
+.modal-btn {
+  border: none;
+  outline: none;
+  padding: 10px 24px;
+  border-radius: 999px;
+  background: #00d86a;
+  color: #04101b;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.modal-btn:hover {
+  filter: brightness(1.06);
+  box-shadow: 0 0 18px rgba(0, 216, 106, 0.45);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  .topbar {
+    padding: 0 1.5rem;
+  }
+
+  .content {
+    padding: 1.8rem 1.2rem 2.4rem;
+  }
+
+  .form-card {
+    padding: 1.6rem 1.4rem;
+  }
+}
