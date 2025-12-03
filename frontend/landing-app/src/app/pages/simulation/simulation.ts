@@ -38,6 +38,34 @@ interface CotizacionResponse {
   cronograma_json: string;
 }
 
+// Estructura del cronograma que devuelve el backend
+interface CronogramaPago {
+  n: number;
+  saldo_inicial: number;
+  interes: number;
+  amortizacion: number;
+  seguro_desgravamen: number;
+  seguro_riesgo: number;
+  gastos: number;
+  cuota_total: number;
+  saldo_final: number;
+}
+
+// Lo que se guardará en localStorage como simulación
+interface SimulacionGuardada {
+  id: string;
+  nombre: string;
+  fecha: string;
+  cliente: string;
+  cliente_dni: string;
+  inmueble: string;
+  moneda: 'PEN' | 'USD';
+  montoFinanciado: number | null;
+  cuotaMensual: number | null;
+  tcea: number | null;
+  cronograma: CronogramaPago[];
+}
+
 type TipoTasa = 'EFECTIVA' | 'NOMINAL';
 type TipoPeriodoGracia = 'Sin Gracia' | 'Parcial' | 'Total';
 
@@ -90,11 +118,16 @@ export class SimulationComponent implements OnInit {
   cuotaMensual: number | null = null;
   tcea: number | null = null;
 
-  // ===== Popups =====
+  // ===== Popup de error/estado =====
   showModal = false;
   modalType: 'success' | 'error' = 'success';
   modalTitle = '';
   modalMessage = '';
+
+  // ===== Popup para GUARDAR simulación =====
+  showSaveModal = false;
+  simName: string = '';
+  private lastCronograma: CronogramaPago[] | null = null;
 
   constructor(
     private http: HttpClient,
@@ -116,9 +149,9 @@ export class SimulationComponent implements OnInit {
 
   // ================== AUTENTICACIÓN EN CABECERAS ==================
   private getAuthHeaders(): HttpHeaders {
-    // intenta obtener token desde el servicio si tiene método, si no desde localStorage
-    // (ajusta si tu AuthService tiene otro getter)
-    const token = (this.auth as any).getToken ? (this.auth as any).getToken() : localStorage.getItem('access_token');
+    const token = (this.auth as any).getToken
+      ? (this.auth as any).getToken()
+      : localStorage.getItem('access_token');
     return new HttpHeaders(token ? { Authorization: `Bearer ${token}` } : {});
   }
 
@@ -205,13 +238,16 @@ export class SimulationComponent implements OnInit {
         this.cuotaMensual = response.cuota_mensual_referencial;
         this.tcea = response.tcea;
 
-        // ✅ Guardar cronograma en localStorage
+        // Guardar cronograma en memoria y en localStorage (última simulación)
         if (response.cronograma_json) {
-          const cronograma = JSON.parse(response.cronograma_json);
+          const cronograma: CronogramaPago[] = JSON.parse(response.cronograma_json);
+          this.lastCronograma = cronograma;
           localStorage.setItem('cronograma_pagos', JSON.stringify(cronograma));
         }
 
-        this.showSuccessModal('Éxito', 'Simulación generada correctamente');
+        // Abrir popup para guardar simulación con nombre
+        this.simName = this.buildDefaultSimulationName();
+        this.showSaveModal = true;
       },
       error: (err) => {
         console.error('Error en simulación:', err);
@@ -233,14 +269,7 @@ export class SimulationComponent implements OnInit {
     this.router.navigate(['/dashboard']);
   }
 
-  // ================== MODAL HELPERS ==================
-  private showSuccessModal(title: string, message: string): void {
-    this.modalType = 'success';
-    this.modalTitle = title;
-    this.modalMessage = message;
-    this.showModal = true;
-  }
-
+  // ================== MODAL DE ERROR ==================
   private showErrorModal(title: string, message: string): void {
     this.modalType = 'error';
     this.modalTitle = title;
@@ -248,17 +277,68 @@ export class SimulationComponent implements OnInit {
     this.showModal = true;
   }
 
-
   closeModal(): void {
     this.showModal = false;
-
-    // Si el modal que se cerró era de éxito, vamos al plan de pagos
-    if (this.modalType === 'success') {
-      this.router.navigate(['/plan-de-pagos']);
-    }
-
-    // (opcional) limpiar tipo para futuros modales
     this.modalType = 'success';
   }
 
+  // ================== LÓGICA PARA GUARDAR SIMULACIONES ==================
+  private buildDefaultSimulationName(): string {
+    const now = new Date();
+    const fecha = now.toLocaleDateString('es-PE');
+    const cliente = this.selectedCliente
+      ? `${this.selectedCliente.nombres} ${this.selectedCliente.apellidos}`
+      : 'Cliente';
+    const inmueble = this.selectedInmueble
+      ? this.selectedInmueble.codigo_proyecto
+      : 'Inmueble';
+    return `Simulación ${fecha} - ${cliente} - ${inmueble}`;
+  }
+
+  saveSimulation(): void {
+    if (!this.lastCronograma) {
+      // Por seguridad, si no hay cronograma no hacemos nada
+      this.showSaveModal = false;
+      return;
+    }
+
+    const nombreFinal = this.simName && this.simName.trim().length > 0
+      ? this.simName.trim()
+      : this.buildDefaultSimulationName();
+
+    const simulacion: SimulacionGuardada = {
+      id: Date.now().toString(),
+      nombre: nombreFinal,
+      fecha: new Date().toISOString(),
+      cliente: this.selectedCliente
+        ? `${this.selectedCliente.nombres} ${this.selectedCliente.apellidos}`
+        : '',
+      cliente_dni: this.selectedCliente?.dni ?? '',
+      inmueble: this.selectedInmueble
+        ? `${this.selectedInmueble.codigo_proyecto} - ${this.selectedInmueble.tipo}`
+        : '',
+      moneda: this.moneda,
+      montoFinanciado: this.montoFinanciado,
+      cuotaMensual: this.cuotaMensual,
+      tcea: this.tcea,
+      cronograma: this.lastCronograma
+    };
+
+    const existingJson = localStorage.getItem('simulaciones_guardadas');
+    const lista: SimulacionGuardada[] = existingJson ? JSON.parse(existingJson) : [];
+
+    lista.push(simulacion);
+    localStorage.setItem('simulaciones_guardadas', JSON.stringify(lista));
+
+    this.showSaveModal = false;
+
+    // Ir directo al plan de pagos para ver el resultado
+    this.router.navigate(['/plan-de-pagos']);
+  }
+
+  cancelSaveSimulation(): void {
+    this.showSaveModal = false;
+    // Aun así dejamos el cronograma_pagos para verlo si el usuario quiere
+    // pero no se agrega a la lista de simulaciones guardadas.
+  }
 }

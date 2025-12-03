@@ -253,7 +253,7 @@ input:focus {
   cursor: pointer;
 }
 
-/* POPUP */
+/* POPUP genérico */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -314,6 +314,45 @@ input:focus {
   color: #020617;
   font-weight: 600;
   cursor: pointer;
+}
+
+/* ===== ESTILOS EXTRA PARA EL MODAL DE GUARDADO ===== */
+.save-modal {
+  border-color: #3b82f6;
+}
+
+.save-modal .modal-icon {
+  background: #3b82f633;
+}
+
+.modal-input {
+  width: 100%;
+  margin: 0.5rem 0 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  padding: 0.55rem 1.1rem;
+  font-size: 0.9rem;
+  background: #020617;
+  color: #f9fafb;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.modal-input:focus {
+  border-color: #22c55e;
+  box-shadow: 0 0 6px #22c55e88;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+}
+
+.modal-btn.secondary {
+  background: transparent;
+  color: #e5e7eb;
+  border: 1px solid #ffffff55;
 }
 
 /* RESPONSIVE */

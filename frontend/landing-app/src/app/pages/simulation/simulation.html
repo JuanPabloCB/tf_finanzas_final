@@ -91,7 +91,7 @@
             </div>
           </div>
 
-          <!-- ======= PERIODO DE GRACIA (AHORA EN LA IZQUIERDA) ======= -->
+          <!-- ======= PERIODO DE GRACIA ======= -->
           <h2>2. Periodo de gracia</h2>
           <div class="block">
             <div class="grid-2">
@@ -257,7 +257,7 @@
               <span *ngIf="montoFinanciado !== null">
                 {{ moneda === 'PEN' ? 'S/' : '$' }} {{ montoFinanciado }}
               </span>
-            <span *ngIf="montoFinanciado === null">—</span>
+              <span *ngIf="montoFinanciado === null">—</span>
             </p>
 
             <p>
@@ -296,7 +296,7 @@
     </section>
   </main>
 
-  <!-- POPUP GENÉRICO -->
+  <!-- POPUP GENÉRICO (errores) -->
   <div class="modal-overlay" *ngIf="showModal">
     <div class="modal-card" [ngClass]="modalType">
       <div class="modal-icon">
@@ -306,6 +306,44 @@
       <h2>{{ modalTitle }}</h2>
       <p>{{ modalMessage }}</p>
       <button class="modal-btn" (click)="closeModal()">Aceptar</button>
+    </div>
+  </div>
+
+  <!-- POPUP PARA GUARDAR SIMULACIÓN -->
+  <div class="modal-overlay" *ngIf="showSaveModal">
+    <div class="modal-card save-modal">
+      <div class="modal-icon">
+        <span>💾</span>
+      </div>
+      <h2>Guardar simulación</h2>
+      <p>
+        Asigna un nombre para identificar esta simulación más adelante
+        en el plan de pagos.
+      </p>
+
+      <input
+        type="text"
+        [(ngModel)]="simName"
+        class="modal-input"
+        placeholder="Ej: Simulación 12/12 Juan Pablo - Surco"
+      />
+
+      <div class="modal-actions">
+        <button
+          type="button"
+          class="modal-btn secondary"
+          (click)="cancelSaveSimulation()"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="modal-btn"
+          (click)="saveSimulation()"
+        >
+          Guardar simulación
+        </button>
+      </div>
     </div>
   </div>
 </div>

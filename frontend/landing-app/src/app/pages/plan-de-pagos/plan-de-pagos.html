@@ -26,7 +26,7 @@
         <div class="plan-header-left">
           <h1>Plan de pagos</h1>
           <p class="subtitle">
-            Revisa el cronograma generado a partir de tu simulación más reciente.
+            Selecciona una simulación guardada y revisa su cronograma de pagos.
           </p>
         </div>
 
@@ -45,17 +45,52 @@
         </div>
       </div>
 
+      <!-- SELECTOR DE SIMULACIÓN -->
+      <div
+        class="sim-selector"
+        *ngIf="simulaciones && simulaciones.length > 0"
+      >
+        <div class="selector-main">
+          <label for="simSelect">Simulación guardada</label>
+          <select
+            id="simSelect"
+            [(ngModel)]="selectedSimId"
+            (ngModelChange)="onSimulationChange()"
+          >
+            <option *ngFor="let sim of simulaciones" [ngValue]="sim.id">
+              {{ sim.nombre }}
+            </option>
+          </select>
+        </div>
+
+        <p class="sim-meta" *ngIf="selectedSim">
+          {{ selectedSim.fecha | date:'short' }} ·
+          {{ selectedSim.cliente || 'Cliente' }} ·
+          {{ selectedSim.inmueble || 'Inmueble' }}
+        </p>
+      </div>
+
       <!-- ======= ESTADO VACÍO ======= -->
       <div
         class="empty-state"
-        *ngIf="!mostrarTabla || !cronograma || cronograma.length === 0"
+        *ngIf="(!simulaciones || simulaciones.length === 0) || !mostrarTabla || !cronograma || cronograma.length === 0"
       >
         <div class="empty-icon">📊</div>
-        <h2>No hay plan de pagos disponible</h2>
-        <p>
-          Genera primero una simulación de crédito para visualizar el
-          cronograma de pagos.
-        </p>
+
+        <ng-container *ngIf="!simulaciones || simulaciones.length === 0; else haySimulaciones">
+          <h2>No hay simulaciones guardadas</h2>
+          <p>
+            Genera una simulación de crédito y guárdala para visualizar aquí su plan de pagos.
+          </p>
+        </ng-container>
+
+        <ng-template #haySimulaciones>
+          <h2>No hay cronograma para mostrar</h2>
+          <p>
+            Selecciona una simulación de la lista para ver su plan de pagos.
+          </p>
+        </ng-template>
+
         <button
           type="button"
           class="btn-primary"

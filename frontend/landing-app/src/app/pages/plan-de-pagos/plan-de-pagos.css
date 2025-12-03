@@ -16,7 +16,7 @@
   overflow-y: auto;
 }
 
-/* ===== HEADER (mismo estilo que simulation) ===== */
+/* ===== HEADER ===== */
 .topbar {
   height: 70px;
   width: 100%;
@@ -110,7 +110,7 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: 1.4rem;
-  margin-bottom: 1.4rem;
+  margin-bottom: 1.1rem;
 }
 
 .plan-header-left h1 {
@@ -153,9 +153,55 @@
   filter: brightness(1.08);
 }
 
+/* ===== SELECTOR DE SIMULACIÓN ===== */
+.sim-selector {
+  margin-bottom: 1rem;
+  padding: 0.9rem 1.1rem;
+  border-radius: 18px;
+  background: #020617;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.7rem 1rem;
+}
+
+.selector-main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.8rem;
+}
+
+.sim-selector label {
+  font-size: 0.83rem;
+  opacity: 0.9;
+}
+
+.sim-selector select {
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.9);
+  background: #020617;
+  color: #e5e7eb;
+  padding: 0.45rem 1.1rem;
+  font-size: 0.85rem;
+  min-width: 260px;
+  outline: none;
+}
+
+.sim-selector select:focus {
+  border-color: #22c55e;
+  box-shadow: 0 0 6px #22c55e88;
+}
+
+.sim-meta {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
 /* ===== EMPTY STATE ===== */
 .empty-state {
-  margin-top: 1.3rem;
+  margin-top: 1.1rem;
   padding: 1.8rem 1.4rem;
   border-radius: 18px;
   background: #020617;
