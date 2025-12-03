@@ -1,4 +1,5 @@
 // src/app/pages/simulation/simulation.ts
+
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
@@ -50,7 +51,7 @@ type TipoPeriodoGracia = 'Sin Gracia' | 'Parcial' | 'Total';
 export class SimulationComponent implements OnInit {
 
   username: string = 'Usuario';
-  private API_BASE = 'http://127.0.0.1:8000';
+  private apiUrl = 'http://localhost:8000/api';
 
   // ===== Listados =====
   clientes: Cliente[] = [];
@@ -60,23 +61,29 @@ export class SimulationComponent implements OnInit {
   selectedClienteId: number | null = null;
   selectedInmuebleId: number | null = null;
 
-  // ===== Condiciones del crédito (sección 2) =====
-  moneda: 'PEN' | 'USD' = 'PEN';          // moneda_prestamo
-  banco: string = '';                     // solo informativo en front
+  // ===== Getters para mostrar cliente e inmueble seleccionados =====
+  get selectedCliente(): Cliente | undefined {
+    return this.clientes.find(c => c.id === this.selectedClienteId);
+  }
 
-  precioInmueble: number | null = null;   // precio_final_inmueble (parte editable)
-  porcentajeInicial: number = 10;         // porcentaje_cuota_inicial (10, 15, 20)
-  bonoBuenPagador: number = 0;            // monto_bono_buen_pagador
+  get selectedInmueble(): Inmueble | undefined {
+    return this.inmuebles.find(i => i.id === this.selectedInmuebleId);
+  }
 
-  plazoAnhos: number = 20;                // plazo_anios
+  // ===== Condiciones del crédito (sección 3) =====
+  moneda: 'PEN' | 'USD' = 'PEN';
+  banco: string = '';
+  precioInmueble: number | null = null;
+  porcentajeInicial: number = 10;
+  bonoBuenPagador: number = 0;
+  plazoAnhos: number = 20;
+  tipoTasa: TipoTasa = 'EFECTIVA';
+  valorTasa: number = 10;
+  capitalizacionDias: number = 30;
 
-  tipoTasa: TipoTasa = 'EFECTIVA';        // tipo_tasa
-  valorTasa: number = 10;                 // valor_tasa  (en %)
-  capitalizacionDias: number = 30;        // capitalizacion (solo si NOMINAL)
-
-  // ===== Periodo de gracia (sección 3) =====
-  tipoPeriodoGracia: TipoPeriodoGracia = 'Sin Gracia';   // tipo_periodo_gracia
-  mesesGracia: number = 0;                                // meses_gracia
+  // ===== Periodo de gracia (sección 2) =====
+  tipoPeriodoGracia: TipoPeriodoGracia = 'Sin Gracia';
+  mesesGracia: number = 0;
 
   // ===== Resultados devueltos por el backend =====
   montoFinanciado: number | null = null;
@@ -93,150 +100,165 @@ export class SimulationComponent implements OnInit {
     private http: HttpClient,
     private router: Router,
     private auth: AuthService
-  ) {
-    this.username = this.auth.getUsernameFromToken() ?? 'Usuario';
-  }
+  ) {}
 
   // ================== LIFECYCLE ==================
   ngOnInit(): void {
-    this.cargarClientes();
-    this.cargarInmuebles();
+    this.loadUsername();
+    this.loadClientes();
+    this.loadInmuebles();
   }
 
-  // ================== HELPERS ==================
-  private buildAuthHeaders(): HttpHeaders {
-    let headers = new HttpHeaders();
-    const token = this.auth.getToken();
-    if (token) headers = headers.set('Authorization', `Bearer ${token}`);
-    return headers;
+  // ================== CARGAR DATOS INICIALES ==================
+  private loadUsername(): void {
+    this.username = this.auth.getUsername() || 'Usuario';
   }
 
-  get selectedCliente(): Cliente | undefined {
-    return this.clientes.find(c => c.id === this.selectedClienteId);
+  // ================== AUTENTICACIÓN EN CABECERAS ==================
+  private getAuthHeaders(): HttpHeaders {
+    // intenta obtener token desde el servicio si tiene método, si no desde localStorage
+    // (ajusta si tu AuthService tiene otro getter)
+    const token = (this.auth as any).getToken ? (this.auth as any).getToken() : localStorage.getItem('access_token');
+    return new HttpHeaders(token ? { Authorization: `Bearer ${token}` } : {});
   }
 
-  get selectedInmueble(): Inmueble | undefined {
-    return this.inmuebles.find(i => i.id === this.selectedInmuebleId);
-  }
-
-  onInmuebleChange() {
-    const inm = this.selectedInmueble;
-    if (inm) {
-      this.precioInmueble = inm.precio_venta;
-      this.moneda = inm.moneda_venta as 'PEN' | 'USD';
-    }
-  }
-
-  // ================== CARGA DE DATA ==================
-  cargarClientes() {
-    this.http.get<Cliente[]>(`${this.API_BASE}/api/clientes`, {
-      headers: this.buildAuthHeaders(),
-    }).subscribe({
-      next: data => this.clientes = data || [],
-      error: () => this.openModal('error', 'Error', 'No se pudieron cargar los clientes.')
+  private loadClientes(): void {
+    this.http.get<Cliente[]>(`${this.apiUrl}/clientes`, { headers: this.getAuthHeaders() }).subscribe({
+      next: (data) => {
+        this.clientes = data;
+      },
+      error: (err) => {
+        console.error('Error cargando clientes:', err);
+        if (err.status === 401) {
+          this.showErrorModal('No autenticado', 'Por favor inicia sesión para cargar los clientes');
+        } else {
+          this.showErrorModal('Error', 'No se pudieron cargar los clientes');
+        }
+      }
     });
   }
 
-  cargarInmuebles() {
-    this.http.get<Inmueble[]>(`${this.API_BASE}/api/inmuebles`, {
-      headers: this.buildAuthHeaders(),
-    }).subscribe({
-      next: data => this.inmuebles = data || [],
-      error: () => this.openModal('error', 'Error', 'No se pudieron cargar las viviendas.')
+  private loadInmuebles(): void {
+    this.http.get<Inmueble[]>(`${this.apiUrl}/inmuebles`, { headers: this.getAuthHeaders() }).subscribe({
+      next: (data) => {
+        this.inmuebles = data;
+      },
+      error: (err) => {
+        console.error('Error cargando inmuebles:', err);
+        if (err.status === 401) {
+          this.showErrorModal('No autenticado', 'Por favor inicia sesión para cargar los inmuebles');
+        } else {
+          this.showErrorModal('Error', 'No se pudieron cargar los inmuebles');
+        }
+      }
     });
   }
 
-  // ================== ACCIONES ==================
-  onSimulate(form: NgForm) {
-    if (form.invalid) {
-      this.openModal('error', 'Datos incompletos', 'Completa todos los campos obligatorios.');
+  // ================== EVENTOS ==================
+  onInmuebleChange(): void {
+    if (this.selectedInmueble) {
+      this.precioInmueble = this.selectedInmueble.precio_venta;
+      this.moneda = this.selectedInmueble.moneda_venta as 'PEN' | 'USD';
+    }
+  }
+
+  onSimulate(form: NgForm): void {
+    // Validar formulario
+    if (!form.valid) {
+      this.showErrorModal('Validación', 'Por favor completa todos los campos requeridos');
       return;
     }
 
-    if (!this.selectedClienteId || !this.selectedInmuebleId) {
-      this.openModal('error', 'Faltan selecciones', 'Debes elegir un cliente y una vivienda.');
+    if (!this.selectedClienteId || !this.selectedInmuebleId || !this.precioInmueble) {
+      this.showErrorModal('Validación', 'Debes seleccionar cliente e inmueble');
       return;
     }
 
-    if (this.precioInmueble === null || this.precioInmueble <= 0) {
-      this.openModal('error', 'Precio inválido', 'El precio del inmueble debe ser mayor a cero.');
-      return;
-    }
-
-    // ===== Armamos el payload EXACTO al CotizacionInput =====
-    const payload = {
+    // Preparar datos para el backend
+    const datosSimulacion = {
       cliente_id: this.selectedClienteId,
       inmueble_id: this.selectedInmuebleId,
-
       moneda_prestamo: this.moneda,
-      precio_final_inmueble: Number(this.precioInmueble),
-
-      porcentaje_cuota_inicial: Number(this.porcentajeInicial),
-      monto_bono_buen_pagador: Number(this.bonoBuenPagador || 0),
-
-      tipo_tasa: this.tipoTasa,                  // 'EFECTIVA' | 'NOMINAL'
-      valor_tasa: Number(this.valorTasa),
-      capitalizacion: this.tipoTasa === 'NOMINAL'
-        ? Number(this.capitalizacionDias || 30)
-        : 30,
-
-      plazo_anios: Number(this.plazoAnhos),
-
+      precio_final_inmueble: this.precioInmueble,
+      porcentaje_cuota_inicial: this.porcentajeInicial,
+      monto_bono_buen_pagador: this.bonoBuenPagador,
+      tipo_tasa: this.tipoTasa,
+      valor_tasa: this.valorTasa,
+      capitalizacion: this.capitalizacionDias,
+      plazo_anios: this.plazoAnhos,
       tipo_periodo_gracia: this.tipoPeriodoGracia,
-      meses_gracia: Number(this.mesesGracia || 0),
-
-      // Por ahora dejamos estos parámetros en 0
-      seguro_desgravamen_porc: 0.0,
-      seguro_riesgo_porc: 0.0,
-      gastos_administrativos: 0.0,
+      meses_gracia: this.mesesGracia,
+      seguro_desgravamen_porc: 0,
+      seguro_riesgo_porc: 0,
+      gastos_administrativos: 0
     };
 
-    const headers = this.buildAuthHeaders();
+    // Enviar al backend con headers de auth
+    this.http.post<CotizacionResponse>(
+      `${this.apiUrl}/cotizar`,
+      datosSimulacion,
+      { headers: this.getAuthHeaders() }
+    ).subscribe({
+      next: (response) => {
+        // Mostrar resultados
+        this.montoFinanciado = response.monto_prestamo;
+        this.cuotaMensual = response.cuota_mensual_referencial;
+        this.tcea = response.tcea;
 
-    this.http.post<CotizacionResponse>(`${this.API_BASE}/api/cotizar`, payload, { headers })
-      .subscribe({
-        next: (resp) => {
-          // Guardamos resultados clave para mostrarlos en la UI
-          this.montoFinanciado = Math.round(resp.monto_prestamo);
-          this.cuotaMensual = Math.round(resp.cuota_mensual_referencial);
-          this.tcea = resp.tcea;
-
-          console.log('== COTIZACIÓN GENERADA ==', resp);
-
-          this.openModal(
-            'success',
-            'Simulación generada',
-            'La simulación se generó correctamente. Puedes revisar el resultado estimado.'
-          );
-
-          // Si luego tienes una pantalla de cronograma, aquí navegas:
-          // this.router.navigate(['/cronograma', resp.id]);
-        },
-        error: (err) => {
-          console.error('Error al generar cotización:', err);
-          this.openModal(
-            'error',
-            'Error al simular',
-            'Ocurrió un problema al generar la simulación. Intenta nuevamente.'
-          );
+        // ✅ Guardar cronograma en localStorage
+        if (response.cronograma_json) {
+          const cronograma = JSON.parse(response.cronograma_json);
+          localStorage.setItem('cronograma_pagos', JSON.stringify(cronograma));
         }
-      });
+
+        this.showSuccessModal('Éxito', 'Simulación generada correctamente');
+      },
+      error: (err) => {
+        console.error('Error en simulación:', err);
+        if (err.status === 401) {
+          this.showErrorModal('No autenticado', 'Por favor inicia sesión antes de generar la simulación');
+        } else {
+          this.showErrorModal('Error', err.error?.detail || 'Error al generar la simulación');
+        }
+      }
+    });
   }
 
-  // ================== MODAL & NAVEGACIÓN ==================
-  openModal(type: 'success' | 'error', title: string, message: string) {
-    this.modalType = type;
+  onLogout(): void {
+    this.auth.logout();
+    this.router.navigate(['/login']);
+  }
+
+  goToDashboard(): void {
+    this.router.navigate(['/dashboard']);
+  }
+
+  // ================== MODAL HELPERS ==================
+  private showSuccessModal(title: string, message: string): void {
+    this.modalType = 'success';
     this.modalTitle = title;
     this.modalMessage = message;
     this.showModal = true;
   }
 
-  closeModal() {
-    this.showModal = false;
+  private showErrorModal(title: string, message: string): void {
+    this.modalType = 'error';
+    this.modalTitle = title;
+    this.modalMessage = message;
+    this.showModal = true;
   }
 
-  onLogout() {
-    this.auth.clearToken();
-    this.router.navigate(['/login']);
+
+  closeModal(): void {
+    this.showModal = false;
+
+    // Si el modal que se cerró era de éxito, vamos al plan de pagos
+    if (this.modalType === 'success') {
+      this.router.navigate(['/plan-de-pagos']);
+    }
+
+    // (opcional) limpiar tipo para futuros modales
+    this.modalType = 'success';
   }
+
 }

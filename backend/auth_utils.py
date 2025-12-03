@@ -62,15 +62,16 @@ def create_access_token(data: dict) -> str:
 
 def decode_access_token(token: str, db: Session):
     """
-    Decodifica el token, extrae el username y devuelve
-    el usuario de la base de datos. Si algo falla, retorna None.
+    Decodifica el token, extrae el EMAIL y devuelve
+    el usuario (CuentaAgente) de la base de datos.
     """
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str | None = payload.get("sub")
-        if username is None:
+        email: str | None = payload.get("sub")  # Ahora es email, no username
+        if email is None:
             return None
     except JWTError:
         return None
 
-    return db.query(models.Usuario).filter(models.Usuario.username == username).first()
+    # Busca en CuentaAgente por email
+    return db.query(models.CuentaAgente).filter(models.CuentaAgente.email == email).first()

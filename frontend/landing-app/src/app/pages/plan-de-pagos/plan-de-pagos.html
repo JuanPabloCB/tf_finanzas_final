@@ -1,1 +1,141 @@
-<p>plan-de-pagos works!</p>
+<!-- src/app/pages/plan-de-pagos/plan-de-pagos.html -->
+<div class="plan-page">
+  <!-- HEADER -->
+  <header class="topbar">
+    <div class="logo" routerLink="/dashboard">
+      <div class="logo-icon">🏠</div>
+      <div class="logo-text">
+        <span>Áurea</span>
+        <span>Inmobiliaria</span>
+      </div>
+    </div>
+
+    <div class="user-actions">
+      <span class="user-name">{{ username }}</span>
+      <button type="button" class="btn-logout" (click)="goToDashboard()">
+        Volver al dashboard
+      </button>
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="content">
+    <section class="plan-card">
+      <!-- HEADER DEL CARD -->
+      <div class="plan-header">
+        <div class="plan-header-left">
+          <h1>Plan de pagos</h1>
+          <p class="subtitle">
+            Revisa el cronograma generado a partir de tu simulación más reciente.
+          </p>
+        </div>
+
+        <div class="plan-header-right" *ngIf="cronograma && cronograma.length > 0">
+          <p class="total-cuotas">
+            Total de cuotas:
+            <strong>{{ cronograma.length }}</strong>
+          </p>
+          <button
+            type="button"
+            class="btn-download"
+            (click)="descargarCSV()"
+          >
+            📥 Descargar CSV
+          </button>
+        </div>
+      </div>
+
+      <!-- ======= ESTADO VACÍO ======= -->
+      <div
+        class="empty-state"
+        *ngIf="!mostrarTabla || !cronograma || cronograma.length === 0"
+      >
+        <div class="empty-icon">📊</div>
+        <h2>No hay plan de pagos disponible</h2>
+        <p>
+          Genera primero una simulación de crédito para visualizar el
+          cronograma de pagos.
+        </p>
+        <button
+          type="button"
+          class="btn-primary"
+          routerLink="/simulaciones/crear"
+        >
+          Ir a simulación
+        </button>
+      </div>
+
+      <!-- ======= TABLA DE CRONOGRAMA ======= -->
+      <div
+        class="plan-body"
+        *ngIf="mostrarTabla && cronograma && cronograma.length > 0"
+      >
+        <div class="table-wrapper">
+          <table class="cronograma-table">
+            <thead>
+              <tr>
+                <th>N°</th>
+                <th>Saldo inicial</th>
+                <th>Interés</th>
+                <th>Amortización</th>
+                <th>Seg. desgravamen</th>
+                <th>Seg. riesgo</th>
+                <th>Gastos</th>
+                <th>Cuota total</th>
+                <th>Saldo final</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="let pago of cronograma; let i = index"
+                [class.alt-row]="i % 2 === 1"
+              >
+                <td class="numero">{{ pago.n }}</td>
+                <td class="moneda">
+                  {{ formatCurrency(pago.saldo_inicial) }}
+                </td>
+                <td class="moneda">
+                  {{ formatCurrency(pago.interes) }}
+                </td>
+                <td class="moneda">
+                  {{ formatCurrency(pago.amortizacion) }}
+                </td>
+                <td class="moneda">
+                  {{ formatCurrency(pago.seguro_desgravamen) }}
+                </td>
+                <td class="moneda">
+                  {{ formatCurrency(pago.seguro_riesgo) }}
+                </td>
+                <td class="moneda">
+                  {{ formatCurrency(pago.gastos) }}
+                </td>
+                <td class="moneda cuota-total">
+                  {{ formatCurrency(pago.cuota_total) }}
+                </td>
+                <td class="moneda saldo-final">
+                  {{ formatCurrency(pago.saldo_final) }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ======= RESUMEN FINAL ======= -->
+        <div class="resumen-footer">
+          <div class="resumen-item">
+            <span>Total intereses</span>
+            <strong>{{ formatCurrency(totalIntereses) }}</strong>
+          </div>
+          <div class="resumen-item">
+            <span>Total amortización</span>
+            <strong>{{ formatCurrency(totalAmortizacion) }}</strong>
+          </div>
+          <div class="resumen-item">
+            <span>Total de cuotas pagadas</span>
+            <strong>{{ formatCurrency(totalCuotas) }}</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>

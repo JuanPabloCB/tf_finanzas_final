@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
-import models, schemas
 from auth_utils import get_password_hash
+import models               # <-- necesario para referenciar modelos
+import schemas              # <-- necesario si usas anotaciones/objetos Pydantic
 
 
 # ============================================================
@@ -15,25 +16,28 @@ def get_user_by_email(db: Session, email: str):
     return db.query(models.Usuario).filter(models.Usuario.email == email).first()
 
 
-def create_user(db: Session, user: schemas.UserCreate):
+def create_user(db: Session, user):
     """
-    Crea un usuario nuevo. 
-    OJO: el modelo Usuario usa la columna 'password', no 'hashed_password'.
-    Guardamos el hash dentro de 'password'.
+    Crea un Usuario.
+    Accepta tanto un Pydantic object (user.username/user.email/user.password)
+    como un dict con keys 'username','email','password'.
+    Se expone como create_user(db=db, user=...) para compatibilidad con main.py
     """
-    hashed_password = get_password_hash(user.password)
+    # obtener valores independientemente de si user es Pydantic o dict
+    username = getattr(user, "username", None) or user.get("username")
+    email = getattr(user, "email", None) or user.get("email")
+    password = getattr(user, "password", None) or user.get("password")
 
-    db_user = models.Usuario(
-        username=user.username,
-        email=user.email,
-        password=hashed_password,   # <-- aquí va 'password', NO 'hashed_password'
-        rol_id=1                    # rol vendedor por defecto
+    hashed = get_password_hash(password)
+    nuevo = models.Usuario(
+        username=username,
+        email=email,
+        password=hashed,
     )
-
-    db.add(db_user)
+    db.add(nuevo)
     db.commit()
-    db.refresh(db_user)
-    return db_user
+    db.refresh(nuevo)
+    return nuevo
 
 
 # ============================================================
@@ -90,3 +94,24 @@ def update_inmueble(db: Session, inmueble_id: int, inmueble_update: schemas.Inmu
         db.commit()
         db.refresh(db_inmueble)
     return db_inmueble
+
+
+# ============================================================
+# 4. CUENTAS AGENTE
+# ============================================================
+
+def get_cuenta_agente_by_email(db: Session, email: str):
+    return db.query(models.CuentaAgente).filter(models.CuentaAgente.email == email).first()
+
+def create_cuenta_agente(db: Session, username: str, email: str, plain_password: str):
+    from auth_utils import get_password_hash
+    hashed = get_password_hash(plain_password)
+    nueva = models.CuentaAgente(
+        username=username,
+        email=email,
+        password=hashed
+    )
+    db.add(nueva)
+    db.commit()
+    db.refresh(nueva)
+    return nueva

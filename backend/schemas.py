@@ -25,6 +25,8 @@ class UserResponse(UserBase):
 class Token(BaseModel):
     access_token: str
     token_type: str
+    username: str | None = None  # <-- Para mostrar en dashboard
+    email: str | None = None
 
 
 # ============================================================

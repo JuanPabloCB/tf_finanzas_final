@@ -46,7 +46,7 @@ export class ClientRegisterComponent {
     private auth: AuthService
   ) {
     // Leer nombre desde el token/localStorage
-    this.username = this.auth.getUsernameFromToken() ?? 'Usuario';
+    this.username = this.auth.getUsername() ?? 'Usuario';
   }
 
   // ===== Enviar formulario =====

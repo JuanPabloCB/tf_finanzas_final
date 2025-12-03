@@ -17,6 +17,8 @@ export interface LoginPayload {
 export interface TokenResponse {
   access_token: string;
   token_type: string;
+  username?: string;  // <-- AGREGAR si no está
+  email?: string;
 }
 
 @Injectable({
@@ -37,7 +39,7 @@ export class AuthService {
   // 🔹 Login
   login(data: LoginPayload): Observable<TokenResponse> {
     const body = new URLSearchParams();
-    body.set('username', data.usernameOrEmail);  // va como "username" hacia FastAPI
+    body.set('username', data.usernameOrEmail);
     body.set('password', data.password);
 
     return this.http.post<TokenResponse>(
@@ -47,6 +49,12 @@ export class AuthService {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       }
     );
+  }
+
+  // 🔹 Guardar token + username
+  saveTokenAndUsername(token: string, username: string): void {
+    this.setToken(token);
+    this.setUsername(username);  // <-- GUARDAR USERNAME
   }
 
   // 🔹 Manejo de token en localStorage
@@ -64,11 +72,11 @@ export class AuthService {
 
   // 🔹 Manejo de username en localStorage
   setUsername(username: string): void {
-    localStorage.setItem(this.USERNAME_KEY, username);
+    localStorage.setItem('username', username);
   }
 
   getUsername(): string | null {
-    return localStorage.getItem(this.USERNAME_KEY);
+    return localStorage.getItem('username');
   }
 
   clearUsername(): void {
@@ -110,5 +118,13 @@ export class AuthService {
 
   isLoggedIn(): boolean {
     return !!this.getToken();
+  }
+
+  logout(): void {
+    // Elimina token/usuario de storage
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('username');
+    // opcional: eliminar otros items relacionados con sesión
+    localStorage.removeItem('refresh_token');
   }
 }

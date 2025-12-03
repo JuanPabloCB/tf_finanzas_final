@@ -13,7 +13,7 @@ import { AuthService } from '../../services/auth.service';
 })
 export class DashboardComponent implements OnInit {
   // Nombre que se muestra en el header
-  username: string = 'Usuario';
+  username: string = '';
 
   // Valores usados en el HTML
   avgRate = 0;        // tasa promedio
@@ -24,52 +24,55 @@ export class DashboardComponent implements OnInit {
     private router: Router,
     private auth: AuthService
   ) {
-    const stored = this.auth.getUsername();
-    this.username = stored ?? 'Usuario';
+    // Leer nombre desde el AuthService (o localStorage)
+    this.username = this.auth.getUsername() ?? 'Usuario';
   }
 
   ngOnInit(): void {
-    const name = this.auth.getUsernameFromToken();
-    this.username = name ?? 'Usuario';
+    // Verificar que esté logueado
+    if (!this.auth.getToken()) {
+      this.router.navigate(['/login']);
+    }
   }
 
   // ====== HEADER ======
-  onLogout() {
+  onLogout(): void {
     // Limpia token y regresa al login
     this.auth.clearToken();
     this.router.navigate(['/login']);
   }
 
   // ====== BOTONES PRINCIPALES ======
-  onNewSimulation() {
+  onNewSimulation(): void {
     this.router.navigate(['/simulaciones/crear']);
   }
 
-  onRegisterClient() {
+  onRegisterClient(): void {
     this.router.navigate(['/clientes/registrar']);
   }
 
-  onRegisterHouse() {
+  onRegisterHouse(): void {
     this.router.navigate(['/viviendas/registrar']);
   }
 
-  onViewHouses() {
+  onViewHouses(): void {
     console.log('Ver viviendas (pendiente de implementar)');
   }
 
-  onViewClients() {
+  onViewClients(): void {
     console.log('Ver clientes (pendiente de implementar)');
   }
 
-  onViewPaymentPlans() {
-    console.log('Ver planes de pago (pendiente de implementar)');
+  onViewPaymentPlans(): void {
+    // 👉 Ahora sí navega al Plan de pagos
+    this.router.navigate(['/plan-de-pagos']);
   }
 
-  onViewReports() {
+  onViewReports(): void {
     console.log('Ver reportes (pendiente de implementar)');
   }
 
-  onViewHistory() {
+  onViewHistory(): void {
     console.log('Ver historial de simulaciones (pendiente de implementar)');
   }
 }

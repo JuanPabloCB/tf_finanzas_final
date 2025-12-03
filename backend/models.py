@@ -104,3 +104,12 @@ class Cotizacion(Base):
     vendedor = relationship("Usuario", back_populates="cotizaciones")
     cliente = relationship("Cliente", back_populates="cotizaciones")
     inmueble = relationship("Inmueble", back_populates="cotizaciones")
+
+
+class CuentaAgente(Base):
+    __tablename__ = "cuentas_agente"
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String(150), nullable=False)  # Solo para mostrar en UI
+    email = Column(String(120), unique=True, nullable=False, index=True)  # <-- PRINCIPAL
+    password = Column(String(255), nullable=False)
+    creado_en = Column(DateTime, default=datetime.utcnow)

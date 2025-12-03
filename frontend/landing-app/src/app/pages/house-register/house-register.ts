@@ -41,7 +41,7 @@ export class HouseRegisterComponent {
     private router: Router,
     private auth: AuthService
   ) {
-    this.username = this.auth.getUsernameFromToken() ?? 'Usuario';
+    this.username = this.auth.getUsername() ?? 'Usuario';
   }
 
   // ===== Guardar vivienda =====

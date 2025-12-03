@@ -96,11 +96,12 @@
           <div class="block">
             <div class="grid-2">
               <div class="field">
-                <label for="tipoPeriodoGracia">Tipo de gracia</label>
+                <label for="tipoPeriodoGracia">Tipo de gracia *</label>
                 <select
                   id="tipoPeriodoGracia"
                   name="tipoPeriodoGracia"
                   [(ngModel)]="tipoPeriodoGracia"
+                  required
                 >
                   <option value="Sin Gracia">Sin Gracia</option>
                   <option value="Parcial">Parcial (solo interés)</option>
@@ -108,14 +109,15 @@
                 </select>
               </div>
 
-              <div class="field">
-                <label for="mesesGracia">Meses de gracia</label>
+              <div class="field" *ngIf="tipoPeriodoGracia !== 'Sin Gracia'">
+                <label for="mesesGracia">Meses de gracia *</label>
                 <input
                   id="mesesGracia"
                   name="mesesGracia"
                   type="number"
-                  min="0"
+                  min="1"
                   [(ngModel)]="mesesGracia"
+                  required
                 />
               </div>
             </div>
@@ -284,7 +286,7 @@
             <button
               type="button"
               class="btn-back"
-              routerLink="/dashboard"
+              (click)="goToDashboard()"
             >
               Volver al dashboard
             </button>

@@ -62,7 +62,7 @@ export class LoginComponent {
     this.loading = true;
 
     const payload: LoginPayload = {
-      usernameOrEmail: this.email, // 👈 acá mandas el correo al backend
+      usernameOrEmail: this.email,
       password: this.password,
     };
 
@@ -73,13 +73,14 @@ export class LoginComponent {
         console.log('Respuesta de login:', res);
         this.loading = false;
 
-        // ✅ Guardar solo el token en localStorage
+        // ✅ Guardar token
         this.auth.setToken(res.access_token);
 
-        // ❌ Ya NO guardamos this.email como username
-        // this.auth.setUsername(this.email);
+        // ✅ Guardar username (lo devuelve el backend)
+        if (res.username) {
+          this.auth.setUsername(res.username);
+        }
 
-        // Mensaje opcional
         this.mensajeOk = 'Login exitoso. Redirigiendo al panel...';
 
         // Redirigir al dashboard
@@ -91,7 +92,7 @@ export class LoginComponent {
 
         const msg =
           err.error?.detail ??
-          'No se pudo iniciar sesión. Verifica tu correo y contraseña.';
+          'No se pude iniciar sesión. Verifica tu correo y contraseña.';
         this.mensajeError = msg;
         this.openModalError(msg);
       },

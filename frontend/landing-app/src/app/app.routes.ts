@@ -6,7 +6,8 @@ import { RegisterComponent } from './pages/register/register';
 import { DashboardComponent } from './pages/dashboard/dashboard';
 import { ClientRegisterComponent } from './pages/client-register/client-register';
 import { HouseRegisterComponent } from './pages/house-register/house-register';
-import { SimulationComponent } from './pages/simulation/simulation'; // 👈 OJO AQUÍ
+import { SimulationComponent } from './pages/simulation/simulation';
+import { PlanDePagos } from './pages/plan-de-pagos/plan-de-pagos';   // 👈 NUEVO
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -20,6 +21,9 @@ export const routes: Routes = [
   { path: 'viviendas/registrar', component: HouseRegisterComponent },
 
   { path: 'simulaciones/crear', component: SimulationComponent },
+
+  // 👇 ESTA ES LA RUTA QUE FALTABA
+  { path: 'plan-de-pagos', component: PlanDePagos },
 
   { path: '**', redirectTo: 'login' },
 ];
